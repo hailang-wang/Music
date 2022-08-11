@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.njupt.dao.SingerDao">
+    <!-- <select id="selectBlog" resultType="Blog">
+ select * from Blog where id = #{id}
+    </select>-->
+
+    <!--因为下面写了，所以上面这个可以注释了，
+        下面是自己要写入的sql语句
+        id:你要执行的sql语法的唯一标识，mybatis会使用这个id的值来找到要执行的sql语句，要求使用接口中的方法名称
+        resultType：表示结果类型的，是sql语句执行后得到的ResultSet，遍历这个ResultSet得到的Java对象的类型
+        值写的是类型的权限的名称
+
+    -->
+    <resultMap id="result" type="com.njupt.entity.Singer">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="name" jdbcType="VARCHAR" property="name"/>
+        <id column="sex" jdbcType="TINYINT" property="sex"/>
+        <id column="pic" jdbcType="VARCHAR" property="pic"/>
+        <id column="birth" jdbcType="TIMESTAMP" property="birth"/>
+        <id column="location" jdbcType="VARCHAR" property="location"/>
+        <id column="introduction" jdbcType="VARCHAR" property="introduction"/>
+    </resultMap>
+
+    <sql id="column">
+        id,name,sex,pic,birth,location,introduction
+    </sql>
+
+    <select id="queryById" resultMap="result" parameterType="java.lang.Integer">
+        select
+            <include refid="column"/>
+            from singer where id=#{0}
+    </select>
+
+    <select id="queryAll" resultMap="result" >
+        select
+        <include refid="column"/>
+        from singer
+    </select>
+
+    <select id="page" resultMap="result">
+        select <include refid="column"/> from singer limit #{0},#{1}
+    </select>
+
+    <insert id="insert" parameterType="com.njupt.entity.Singer">
+        insert into singer (id, name, sex,
+        pic, birth, location,
+        introduction)
+        values (#{0}, #{1}, #{2},
+        #{3}, #{4}, #{5},
+        #{6})
+    </insert>
+    <!--按照id删除-->
+    <delete id="deleteById" >
+        delete from singer where id=#{0}
+    </delete>
+
+    <update id="update">
+        update  singer set pic=#{pic} where id=#{id}
+    </update>
+
+
+
+
+
+</mapper>
+
+        <!--
+   解释上面的内容：
+        作用：sql的映射文件，写sql语句的，mybatis会自动执行
+            1指定约束文件<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">称为指定约束文件
+        mybatis-3-mapper.dtd使约束文件的名称，扩展名是dtd的
+            2约束文件的作用：限制，检查在当前文件中出现的标签，属性必须是符合mybatis的要求的
+            3mapper
+        是当前文件的跟标签，必须的
+        namespace：叫做命名空间，唯一值的，可以自由定义字符串，但是要求，必须使用dao接口的全限定名称
+        com.njupt.dao.StudentDao
+            4select
+        在当前文件中，可以使用特定的标签表示数据库的特定操作
+        <select>:表示执行查询select语句
+        <update>:表示更新数据库的操作，就是在《update》标签中，写的是update sql语句
+        <insert>:表示插入，insert语句
+        <delete>:表示删除，执行的是delete语句
+
+-->
